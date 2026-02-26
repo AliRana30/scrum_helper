@@ -664,7 +664,7 @@ function allIncluded(outputTarget = 'email') {
 				const errorMsg = `Invalid search query or date range. Please verify your date range format and try again.`;
 				logError(errorMsg);
 				if (outputTarget === 'popup') {
-					Materialize.toast && Materialize.toast(errorMsg, 4000);
+					NotificationSystem.showToast(errorMsg, 'error', 4000);
 				}
 				throw new Error(errorMsg);
 			}
@@ -673,7 +673,7 @@ function allIncluded(outputTarget = 'email') {
 				const errorMsg = `Error fetching GitHub issues: ${issuesRes.status} ${issuesRes.statusText}`;
 				logError(errorMsg);
 				if (outputTarget === 'popup') {
-					Materialize.toast && Materialize.toast(errorMsg, 4000);
+					NotificationSystem.showToast(errorMsg, 'error', 4000);
 				}
 				throw new Error(errorMsg);
 			}
@@ -681,7 +681,7 @@ function allIncluded(outputTarget = 'email') {
 				const errorMsg = `Error fetching GitHub PR review data: ${prRes.status} ${prRes.statusText}`;
 				logError(errorMsg);
 				if (outputTarget === 'popup') {
-					Materialize.toast && Materialize.toast(errorMsg, 4000);
+					NotificationSystem.showToast(errorMsg, 'error', 4000);
 				}
 				throw new Error(errorMsg);
 			}
@@ -953,9 +953,8 @@ function allIncluded(outputTarget = 'email') {
 					generateBtn.innerHTML = '<i class="fa fa-refresh"></i> Generate Report';
 					generateBtn.disabled = false;
 				}
-			} else {
-				alert('Invalid or expired GitHub token. Please check your token in the extension popup and try again.');
 			}
+			NotificationSystem.showToast('Invalid or expired GitHub token. Please check your token in the settings and try again.', 'error', 5000);
 		}
 	}
 
@@ -1469,12 +1468,11 @@ ${userReason}`;
 		} else if (useMergedStatus) {
 			if (prsToCheck.length > 30) {
 				fallbackToSimple = true;
-				if (typeof Materialize !== 'undefined' && Materialize.toast) {
-					Materialize.toast(
-						'API limit exceeded. Please use a GitHub token for full status. Showing only open/closed PRs.',
-						5000,
-					);
-				}
+				NotificationSystem.showToast(
+					'API limit exceeded. Please use a GitHub token for full status. Showing only open/closed PRs.',
+					'info',
+					5000,
+				);
 			} else {
 				// Use REST API for each PR, cache results
 				for (const pr of prsToCheck) {
@@ -1854,12 +1852,12 @@ async function fetchPrsMergedStatusBatch(prs, headers) {
 	if (prs.length === 0) return results;
 	const query = `query {
 ${prs
-	.map(
-		(pr, i) => `	repo${i}: repository(owner: \"${pr.owner}\", name: \"${pr.repo}\") {
+			.map(
+				(pr, i) => `	repo${i}: repository(owner: \"${pr.owner}\", name: \"${pr.repo}\") {
 		pr${i}: pullRequest(number: ${pr.number}) { merged }
 	}`,
-	)
-	.join('\n')}
+			)
+			.join('\n')}
 }`;
 
 	try {
@@ -2041,8 +2039,8 @@ async function fetchUserRepositories(username, token, org = '') {
 				}));
 
 			return repos.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-		} catch (err) {}
-	} catch (err) {}
+		} catch (err) { }
+	} catch (err) { }
 }
 
 function filterDataByRepos(data, selectedRepos) {
