@@ -149,7 +149,6 @@ class EmailClientAdapter {
 
 	injectContent(element, content, eventType) {
 		if (!element) {
-			console.log('No element found for injection');
 			return false;
 		}
 		const clientType = this.detectClient();
@@ -185,7 +184,6 @@ class EmailClientAdapter {
 			}
 			return true;
 		} catch (error) {
-			console.error('Content injection failed:', error);
 			return false;
 		}
 	}
@@ -195,7 +193,6 @@ class EmailClientAdapter {
 		return new Promise((resolve, reject) => {
 			const tryInject = () => {
 				if (attempts >= maxRetries) {
-					console.error('Max retry attempts reached');
 					reject(new Error('Max retry attempts reached'));
 					return;
 				}
@@ -213,4 +210,3 @@ class EmailClientAdapter {
 
 // Create global instance
 window.emailClientAdapter = new EmailClientAdapter();
-console.log('Email client adapter initialized');

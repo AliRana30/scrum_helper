@@ -1,4 +1,18 @@
 // GitLab API Helper for Scrum Helper Extension
+const DEBUG = false;
+
+function log(...args) {
+	if (DEBUG) {
+		// console.log(`[GITLAB-HELPER]:`, ...args);
+	}
+}
+
+function logError(...args) {
+	if (DEBUG) {
+		console.error('[GITLAB-HELPER]:', ...args);
+	}
+}
+
 class GitLabHelper {
 	constructor() {
 		this.baseUrl = 'https://gitlab.com/api/v4';
@@ -149,7 +163,7 @@ class GitLabHelper {
 					// Add small delay to avoid rate limiting
 					await new Promise((resolve) => setTimeout(resolve, 100));
 				} catch (error) {
-					console.error(`Error fetching MRs for project ${project.name}:`, error);
+					logError(`Error fetching MRs for project ${project.name}:`, error);
 					// Continue with other projects
 				}
 			}
@@ -167,7 +181,7 @@ class GitLabHelper {
 					// Add small delay to avoid rate limiting
 					await new Promise((resolve) => setTimeout(resolve, 100));
 				} catch (error) {
-					console.error(`Error fetching issues for project ${project.name}:`, error);
+					logError(`Error fetching issues for project ${project.name}:`, error);
 					// Continue with other projects
 				}
 			}
@@ -193,7 +207,7 @@ class GitLabHelper {
 
 			return gitlabData;
 		} catch (err) {
-			console.error('GitLab Fetch Failed:', err);
+			logError('GitLab Fetch Failed:', err);
 			// Reject queued calls on error
 			this.cache.queue.forEach(({ reject }) => {
 				reject(err);
@@ -222,7 +236,7 @@ class GitLabHelper {
 				// Add small delay to avoid rate limiting
 				await new Promise((resolve) => setTimeout(resolve, 100));
 			} catch (error) {
-				console.error(`[GITLAB-DEBUG] Error fetching detailed MR ${mr.iid}:`, error);
+				logError(`Error fetching detailed MR ${mr.iid}:`, error);
 				detailed.push(mr); // Use basic data if detailed fetch fails
 			}
 		}
@@ -246,7 +260,7 @@ class GitLabHelper {
 				// Add small delay to avoid rate limiting
 				await new Promise((resolve) => setTimeout(resolve, 100));
 			} catch (error) {
-				console.error(`[GITLAB-DEBUG] Error fetching detailed issue ${issue.iid}:`, error);
+				logError(`Error fetching detailed issue ${issue.iid}:`, error);
 				detailed.push(issue); // Use basic data if detailed fetch fails
 			}
 		}

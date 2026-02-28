@@ -29,13 +29,11 @@ chrome?.storage.onChanged.addListener((changes, area) => {
 chrome?.action.onClicked.addListener((tab) => {
 	try {
 		if (!chrome?.sidePanel?.open) {
-			console.warn('Side panel API not available.');
 			return;
 		}
 
 		const tabId = typeof tab?.id === 'number' ? tab.id : undefined;
 		if (tabId == null) {
-			console.warn('No tabId available; cannot toggle side panel.');
 			return;
 		}
 
@@ -43,13 +41,9 @@ chrome?.action.onClicked.addListener((tab) => {
 
 		if (isOpen) {
 			if (typeof chrome?.sidePanel.close === 'function') {
-				chrome?.sidePanel.close({ tabId }).catch((error) => {
-					console.error('Failed to close side panel:', error);
-				});
+				chrome?.sidePanel.close({ tabId }).catch(() => { /* ignore */ });
 			} else if (typeof chrome?.sidePanel.setOptions === 'function') {
-				chrome?.sidePanel.setOptions({ tabId, enabled: false }).catch((error) => {
-					console.error('Failed to disable side panel:', error);
-				});
+				chrome?.sidePanel.setOptions({ tabId, enabled: false }).catch(() => { /* ignore */ });
 			}
 			openByTabId.set(tabId, false);
 			return;
@@ -59,17 +53,14 @@ chrome?.action.onClicked.addListener((tab) => {
 		if (typeof chrome?.sidePanel.setOptions === 'function') {
 			chrome?.sidePanel
 				.setOptions({ tabId, enabled: true, path: 'popup.html' })
-				.catch((error) => console.error('Failed to enable side panel:', error));
+				.catch(() => { /* ignore */ });
 		}
 
 		chrome?.sidePanel
 			.open({ tabId })
 			.then(() => openByTabId.set(tabId, true))
-			.catch((error) => {
+			.catch(() => {
 				openByTabId.set(tabId, false);
-				console.error('Failed to open side panel:', error);
 			});
-	} catch (error) {
-		console.error('Failed to toggle side panel:', error);
-	}
+	} catch (error) { /* ignore */ }
 });
