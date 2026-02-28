@@ -22,7 +22,7 @@ function handleBodyOnLoad() {
 			chrome.storage.local.set({ [platformUsernameKey]: result.platformUsername });
 			// Remove the old key
 			chrome.storage.local.remove(['platformUsername']);
-			console.log(`[MIGRATION] Migrated platformUsername to ${platformUsernameKey}`);
+			// console.log(`[MIGRATION] Migrated platformUsername to ${platformUsernameKey}`);
 		}
 	});
 
