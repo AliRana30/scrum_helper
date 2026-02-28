@@ -103,16 +103,6 @@ function handleBodyOnLoad() {
 	);
 }
 
-document.getElementById('refreshCache').addEventListener('click', async (e) => {
-	const button = e.currentTarget;
-	button.classList.add('loading');
-	button.disabled = true;
-
-	setTimeout(() => {
-		button.classList.remove('loading');
-		button.disabled = false;
-	}, 500);
-});
 
 function handleEnableChange() {
 	const value = enableToggleElement.checked;
